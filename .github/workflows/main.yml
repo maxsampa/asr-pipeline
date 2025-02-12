@@ -3,27 +3,33 @@ name: ASR Pipeline
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-python@v3
+      - name: Setup Python
+        uses: actions/setup-python@v3
         with:
           python-version: '3.9'
-      - run: pip install -r requirements.txt
-        
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
   test:
+    runs-on: ubuntu-latest
     needs: build
-    runs-on: ubuntu-latest
     steps:
-      - run: pytest
-        
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.9'
+      - name: Run tests
+        run: python -m pytest
+
   deploy:
-    needs: test
     runs-on: ubuntu-latest
+    needs: test
     steps:
-      - run: echo "Deploy completo"
+      - run: echo "Deploy realizado!"
